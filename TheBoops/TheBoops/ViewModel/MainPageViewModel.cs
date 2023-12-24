@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TheBoops.Database.DbHandlers;
+using TheBoops.Database.Tables;
 
 namespace TheBoops.ViewModel
 {
@@ -20,7 +21,14 @@ namespace TheBoops.ViewModel
 
         private async Task CheckDB()
         {
-            await _DbHandler.UserExists("Dhuel");
+            if(await Tests.Tests.RunTestSet(_DbHandler))
+            {
+                Console.WriteLine("Tests passed");
+            }
+            else
+            {
+                Console.WriteLine("TEsts failed");
+            }
         }
     }
 }
