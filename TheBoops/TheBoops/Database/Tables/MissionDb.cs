@@ -11,15 +11,16 @@ namespace TheBoops.Database.Tables
     public class MissionsDb
     {
         [DynamoDBHashKey]
-        [DynamoDBProperty("RoomID")]
-        public string? RoomID { get; set; }
+        [DynamoDBProperty("TableName")]
+        public string TableName { get; set; }
         [DynamoDBGlobalSecondaryIndexHashKey]
         [DynamoDBProperty("MissionID")]
-        public string? MissionID { get; set; }
+        public string MissionID { get; set; }
+        [DynamoDBProperty("RoomID")]
+        public string RoomID { get; set; }
         [DynamoDBProperty("MissionName")]
-        public string? MissionName { get; set; }
+        public string MissionName { get; set; }
         [DynamoDBProperty("MissionScore")]
-        public string? MissionScore { get; set; }
-        
+        public int MissionScore { get; set; }
     }
 }

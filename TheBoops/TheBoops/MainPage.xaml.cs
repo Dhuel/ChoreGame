@@ -1,4 +1,5 @@
-﻿using TheBoops.ViewModel;
+﻿using TheBoops.Services;
+using TheBoops.ViewModel;
 
 namespace TheBoops
 {
@@ -8,6 +9,11 @@ namespace TheBoops
         {
             InitializeComponent();
             BindingContext = viewModel;
+        }
+        protected async override void OnAppearing()
+        {
+            await NavigationHandler.NavToUsers();
+            base.OnAppearing();
         }
     } 
 }

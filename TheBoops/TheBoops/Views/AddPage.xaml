@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TheBoops.Views.AddPage"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save"
+             Order="Primary"
+             Priority="0"
+             Command="{Binding SaveRecordButton}"/>
+    </ContentPage.ToolbarItems>
+    <VerticalStackLayout>
+        <VerticalStackLayout>
+            <StackLayout x:Name="AddUser" IsVisible="false" Margin="10,20,10,0">
+                <Label Text="User Name"/>
+                <Entry x:Name="UserNameEntry"/>
+            </StackLayout>
+            <StackLayout x:Name="AddRoom" IsVisible="false" Margin="10,20,10,0">
+                <Label Text="Room Name"/>
+                <Entry x:Name="RoomNameEntry"/>
+            </StackLayout>
+            <StackLayout x:Name="AddMission" IsVisible="false" Margin="10,20,10,0">
+                <Label Text="Mission Name"/>
+                <Entry x:Name="MissionNameEntry"/>
+                <Label Text="Mission Points"/>
+                <Entry x:Name="MissionPointsEntry" Keyboard="Numeric"/>
+            </StackLayout>
+        </VerticalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

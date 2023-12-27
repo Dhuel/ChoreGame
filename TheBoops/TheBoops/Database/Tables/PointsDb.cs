@@ -12,14 +12,22 @@ namespace TheBoops.Database.Tables
     public class PointsDb
     {
         [DynamoDBHashKey]
-        [DynamoDBProperty("UserID")]
-        public string? UserID { get; set; }
-        [DynamoDBProperty("CompletionDate")]
-        public string? CompletionDate { get; set; }
-
+        [DynamoDBProperty("TableName")]
+        public string TableName { get; set; }
+        [DynamoDBGlobalSecondaryIndexHashKey]
+        [DynamoDBProperty("PointsID")]
+        public string PointsID { get; set; }
         [DynamoDBProperty("MissionID")]
-        public string? MissionID { get; set; }
-        
+        public string MissionID { get; set; }
+        [DynamoDBProperty("CompletionDate")]
+        public string CompletionDate { get; set; }
+        [DynamoDBProperty("UserID")]
+        public string UserID { get; set; }
+        [DynamoDBProperty("PointValue")]
+        public int PointValue { get; set; }
+
+
+
 
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TheBoops.Views.MissionsPage"
+            Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Binding AddText}"
+             IconImageSource="example_icon.png"
+             Order="Primary"
+             Priority="0"
+             Command="{Binding AddButtonClicked}"/>
+    </ContentPage.ToolbarItems>
+    <StackLayout>
+        <ListView ItemsSource="{Binding Missions}" 
+               HasUnevenRows="True" 
+               SeparatorVisibility="None"
+               SelectedItem="{Binding Mission, Mode=TwoWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame CornerRadius="10"  HasShadow="False">
+                            <HorizontalStackLayout>
+                                <Label Text="{Binding MissionName, StringFormat='{0:F0}'}" TextColor="#504E4E" FontSize="Large"/>
+                                <Label Text="{Binding MissionScore, StringFormat=' ({0:F0})'}" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
+                            </HorizontalStackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

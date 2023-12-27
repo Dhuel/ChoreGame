@@ -1,9 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace TheBoops.Database.Tables
 {
@@ -11,9 +7,11 @@ namespace TheBoops.Database.Tables
     public class RoomsDb
     {
         [DynamoDBHashKey]
+        [DynamoDBProperty("TableName")]
+        public string TableName { get; set; }
         [DynamoDBProperty("RoomID")]
-        public string? RoomID { get; set; }
+        public string RoomID { get; set; }
         [DynamoDBProperty("RoomName")]
-        public string? RoomName { get; set; }
+        public string RoomName { get; set; }
     }
 }

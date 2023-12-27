@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using TheBoops.Database.DbHandlers;
 using TheBoops.Database.Tables;
+using TheBoops.Global;
 
 namespace TheBoops.ViewModel
 {
@@ -15,20 +16,13 @@ namespace TheBoops.ViewModel
         public ICommand ButtonCommand { get; }
         public MainPageViewModel(IDbHandler DbHandler)
         {
-            ButtonCommand = new Command(async () => await CheckDB());
+            //ButtonCommand = new Command(async () => await CheckDB());
             _DbHandler = DbHandler;
+            LoadGLobals();
         }
-
-        private async Task CheckDB()
+        public void LoadGLobals()
         {
-            if(await Tests.Tests.RunTestSet(_DbHandler))
-            {
-                Console.WriteLine("Tests passed");
-            }
-            else
-            {
-                Console.WriteLine("TEsts failed");
-            }
+            GlobalControl.SetDbHandler(_DbHandler);
         }
     }
 }
