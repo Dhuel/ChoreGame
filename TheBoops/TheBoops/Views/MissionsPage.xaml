@@ -11,6 +11,9 @@
              Command="{Binding AddButtonClicked}"/>
     </ContentPage.ToolbarItems>
     <StackLayout>
+        <StackLayout HorizontalOptions="Center" Margin=" 0,30,0,0">
+            <Label Text="What are you doing?" FontSize="Header"></Label>
+        </StackLayout>
         <ListView ItemsSource="{Binding Missions}" 
                HasUnevenRows="True" 
                SeparatorVisibility="None"
@@ -18,12 +21,14 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Frame CornerRadius="10"  HasShadow="False">
-                            <HorizontalStackLayout>
-                                <Label Text="{Binding MissionName, StringFormat='{0:F0}'}" TextColor="#504E4E" FontSize="Large"/>
-                                <Label Text="{Binding MissionScore, StringFormat=' ({0:F0})'}" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
-                            </HorizontalStackLayout>
-                        </Frame>
+                        <VerticalStackLayout  Margin="10,10,10,10" Background="Transparent">
+                            <Frame CornerRadius="10"  HasShadow="False" BackgroundColor="{Binding Color}"> 
+                                <StackLayout Orientation="Horizontal" Background="Transparent">
+                                    <Label Text="{Binding MissionName, StringFormat='{0:F0}'}" TextColor="#504E4E" FontSize="Large"/>
+                                    <Label Text="{Binding MissionScore, StringFormat=' ({0:F0})'}" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
+                                </StackLayout>
+                            </Frame>
+                        </VerticalStackLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>

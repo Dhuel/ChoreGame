@@ -18,11 +18,18 @@ namespace TheBoops.Database.DbHandlers
             _context = new DynamoDBContext(dynamoDbClient);
         }
 
+        private bool isConnected = false;
+
         public async Task<object> GetTableData(string tableName, List<SearchQuery> searchQueries = null)
         {
             object returnData = null;
             try
             {
+                if (!isConnected)
+                {
+                    throw new Exception("Not connected");
+                }
+
                 switch (tableName)
                 {
                     case Constants.UsersAWSTable:
@@ -85,6 +92,19 @@ namespace TheBoops.Database.DbHandlers
             catch (Exception exc)
             {
                 Debug.WriteLine(exc);
+                //make this a not connected error handler
+                switch (tableName)
+                {
+                    case Constants.UsersAWSTable:
+                        return new List<UsersDb>() { new UsersDb() { TableName = "Not connected", UserName = "Someone - Not connected", UserID = "Not connected" } };
+                    case Constants.RoomsAWSTable:
+                        return new List<RoomsDb>() { new RoomsDb() { TableName = "Not connected", RoomID = "Not connected", RoomName = "Somewhere - Not connected" } };
+                    case Constants.MissionsAWSTable:
+                        return new List<MissionsDb>() { new MissionsDb() { TableName = "Not connected", RoomID = "Not connected", MissionName = "Something - Not connected", MissionScore=0 } };
+                    case Constants.PointsAWSTable:
+                        return new List<PointsDb>() { new PointsDb() { TableName = "Not connected", MissionID = "Not connected", PointsID = "Not connected", PointValue = 0, UserID = "Not connected", CompletionDate = DateTime.Now.ToString("MM/dd/yyyy") } };
+
+                }
                 return null;
             }
         }
@@ -134,6 +154,14 @@ namespace TheBoops.Database.DbHandlers
 
             return returnData;
         } 
+        /// <summary>
+        /// Adds a record to the table using The record type, and name of the record
+        /// </summary>
+        /// <param name="RecordType"></param>
+        /// <param name="Name"></param>
+        /// <param name="Value"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public async Task<bool> AddRecordToDb(string RecordType, string Name, string Value = "", string ID = "")
         {
             bool returnvalue = false;
@@ -146,7 +174,7 @@ namespace TheBoops.Database.DbHandlers
                 case Constants.UsersAWSTable:
                     UsersDb _user;
                     IEnumerable<UsersDb> _users = (IEnumerable<UsersDb>)await GetTableData(Constants.UsersAWSTable, new() { new SearchQuery() { Field = "UserName", Operator = ScanOperator.Equal, FieldValue = Name}});
-                    if (_users.Count() == 0)
+                    if (_users.Any())
                         _user = CreateUsersDB(Name);
                     else
                         _user = _users.FirstOrDefault();
@@ -155,7 +183,7 @@ namespace TheBoops.Database.DbHandlers
                 case Constants.RoomsAWSTable:
                     RoomsDb _room;
                     IEnumerable<RoomsDb>_rooms = (IEnumerable<RoomsDb>)await GetTableData(Constants.RoomsAWSTable, new() { new SearchQuery() { Field = "RoomName", Operator = ScanOperator.Equal, FieldValue = Name } });
-                    if (_rooms.Count() == 0)
+                    if (_rooms.Any())
                         _room = CreateRoomDB(Name);
                     else
                         _room = _rooms.FirstOrDefault();
@@ -164,8 +192,8 @@ namespace TheBoops.Database.DbHandlers
                 case Constants.MissionsAWSTable:
                     MissionsDb _mission;
                     IEnumerable<MissionsDb> _missions = (IEnumerable<MissionsDb>)await GetTableData(Constants.MissionsAWSTable, new() { new SearchQuery() { Field = "MissionName", Operator = ScanOperator.Equal, FieldValue = Name }, new SearchQuery() { Field = "RoomID", Operator = ScanOperator.Equal, FieldValue = ID } });
-                    if (_missions.Count() == 0)
-                        _mission = CreateMissionDB(Name, Convert.ToInt32(Value), ID);
+                    if (_missions.Any())
+                        _mission = DbHandler.CreateMissionDB(Name, Convert.ToInt32(Value), ID);
                     else
                         _mission = _missions.FirstOrDefault();
                     returnvalue = await SaveTableData(Constants.MissionsPage, _mission);
@@ -208,7 +236,7 @@ namespace TheBoops.Database.DbHandlers
 
             return _returnRoom;
         }
-        MissionsDb CreateMissionDB(string i_MissionName, int i_MissionValue, string i_RoomID)
+        static MissionsDb CreateMissionDB(string i_MissionName, int i_MissionValue, string i_RoomID)
         {
             MissionsDb _returnMission = new()
             {

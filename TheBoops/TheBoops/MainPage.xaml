@@ -4,11 +4,28 @@
              x:Class="TheBoops.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout
-        Padding="30,0"
-        Spacing="25">
+        <VerticalStackLayout >
+            <StackLayout HorizontalOptions="Center" Margin=" 0,30,0,0"> 
+                <Label Text="Who dis?" FontSize="Header"></Label>
+            </StackLayout>
+            
+            <!--<Button Text="LoadDB" Command="{Binding ButtonCommand}"/>-->
+            <VerticalStackLayout Margin="10,10,10,10">
+                <Frame CornerRadius="10"  HasShadow="False">
+                    <StackLayout >
+                        <Label Text="Dhuel" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
+                    </StackLayout>
+                </Frame>
+            </VerticalStackLayout>
 
-            <Button Text="button1" Command="{Binding ButtonCommand}"/>
+            <VerticalStackLayout Margin="10,10,10,10">
+                <Frame CornerRadius="10"  HasShadow="False">
+                    <StackLayout >
+                        <Label Text="Brittany" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
+                    </StackLayout>
+                </Frame>
+            </VerticalStackLayout>
+            
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

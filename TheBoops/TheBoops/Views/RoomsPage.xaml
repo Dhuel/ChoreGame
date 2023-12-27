@@ -11,6 +11,9 @@
              Command="{Binding AddButtonClicked}"/>
     </ContentPage.ToolbarItems>
     <StackLayout>
+        <StackLayout HorizontalOptions="Center" Margin=" 0,30,0,0">
+            <Label Text="Where are you?" FontSize="Header"></Label>
+        </StackLayout>
         <ListView ItemsSource="{Binding Rooms}" 
                HasUnevenRows="True" 
                SeparatorVisibility="None"
@@ -18,7 +21,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <VerticalStackLayout>
+                        <VerticalStackLayout  Margin="10,10,10,10">
                             <Frame CornerRadius="10"  HasShadow="False">
                                 <StackLayout>
                                     <Label Text="{Binding RoomName, StringFormat='{0:F0}'}" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
