@@ -14,9 +14,6 @@
     <MauiXaml Update="AppShell.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="MainPage.xaml">
-      <SubType>Designer</SubType>
-    </MauiXaml>
     <MauiXaml Update="Platforms\Windows\App.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
@@ -35,7 +32,7 @@
     <MauiXaml Update="Views\RoomsPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Views\UsersPage.xaml">
+    <MauiXaml Update="UsersPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
   </ItemGroup>

@@ -24,9 +24,11 @@ namespace TheBoops.Database.Tables
             this.UserName = db.UserName;
             this.TableName = db.TableName;
             this.UserNameDisplay = UserName+" (" + Points + ")";
+            this.Points = Points;
 
         }
         public string UserNameDisplay { get; set; }
+        public int Points { get; set; }
 
         internal UsersDb AsDb()
         {

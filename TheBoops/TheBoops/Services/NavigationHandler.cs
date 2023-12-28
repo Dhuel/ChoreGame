@@ -10,11 +10,6 @@ namespace TheBoops.Services
 {
     public static class NavigationHandler
     {
-        public async static Task NavToUsers()
-        {
-            await Application.Current.MainPage.Navigation.PushAsync(new UsersPage());
-        }
-
         public async static Task NavToRooms()
         {
             await Application.Current.MainPage.Navigation.PushAsync(new RoomsPage());

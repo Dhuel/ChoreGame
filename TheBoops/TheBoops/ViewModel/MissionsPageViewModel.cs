@@ -1,7 +1,9 @@
 ﻿using Amazon.DynamoDBv2.DocumentModel;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Xml.Linq;
 using TheBoops.Database.DbHandlers;
 using TheBoops.Database.Tables;
 using TheBoops.Global;
@@ -29,8 +31,8 @@ namespace TheBoops.ViewModel
         #endregion
         #region Page Variables
         public string Title { get; set; }
-        private IEnumerable<MissionsDb> Missions_ { get; set; }
-        public IEnumerable<MissionsDb> Missions
+        private IEnumerable<MissionDisplay> Missions_ { get; set; }
+        public IEnumerable<MissionDisplay> Missions
         {
             get
             {
@@ -42,8 +44,8 @@ namespace TheBoops.ViewModel
                 NotifyPropertyChanged();
             }
         }
-        private MissionsDb Mission_ { get; set; }
-        public MissionsDb Mission
+        private MissionDisplay Mission_ { get; set; }
+        public MissionDisplay Mission
         {
             get { return Mission_; }
             set
@@ -62,6 +64,17 @@ namespace TheBoops.ViewModel
         }
         private RoomsDb RoomDB {  get; set; }  
 
+        private DateTime CompletionDate_ { get; set; }
+        public DateTime CompletionDate
+        {
+            get { return CompletionDate_; }
+            set
+            {
+                CompletionDate_ = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         #endregion
         #region Constructor
         public MissionsPageViewModel(RoomsDb i_room)
@@ -74,14 +87,32 @@ namespace TheBoops.ViewModel
         #region Function Calls
         public async void LoadPageData(RoomsDb i_room)
         {
+            CompletionDate = DateTime.Now;
             RoomDB = i_room;
             _dbHaHandler = GlobalControl.GetDbHandler();
-            Missions = (IEnumerable<MissionsDb>)await _dbHaHandler.GetTableData(Constants.MissionsAWSTable, new() { new SearchQuery() { Field = "RoomID", Operator = ScanOperator.Equal, FieldValue = RoomDB.RoomID } });
+            Missions = new List<MissionDisplay>();
+
+            IEnumerable<MissionsDb> Missions_ = ((IEnumerable<MissionsDb>)await _dbHaHandler.GetTableData(Constants.MissionsAWSTable, new() { new SearchQuery("RoomID", ScanOperator.Equal, RoomDB.RoomID) })).OrderBy(c => c.MissionName); ;
+            foreach (MissionsDb mission in Missions_)
+            {
+                List<MissionDisplay> _Missions = Missions.ToList();
+                _Missions.Add(new MissionDisplay(mission, "Orange"));
+                Missions = _Missions;
+            }
         }
         private async Task<bool> MissionSelected(MissionsDb mission)
         {
             bool returnvalue;
-            returnvalue = await _dbHaHandler.AddRecordToDb(Constants.PointsAWSTable, mission.MissionID, mission.MissionScore.ToString());
+            PointsDb points = new()
+            {
+                MissionID = mission.MissionID,
+                PointValue = mission.MissionScore,
+                TableName = Constants.PointsAWSTable,
+                UserID = GlobalControl.GetHash(),
+                PointsID = GlobalControl.GetHash(12),
+                CompletionDate = CompletionDate.ToString("MM/dd/yyyy")
+            };
+            returnvalue = await _dbHaHandler.AddRecordToDb(Constants.PointsAWSTable, points);
             await NavigationHandler.DisplayAlert("Mission complete!");
             await NavigationHandler.PopToRoot();
             return returnvalue;

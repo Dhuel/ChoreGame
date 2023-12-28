@@ -23,4 +23,20 @@ namespace TheBoops.Database.Tables
         [DynamoDBProperty("MissionScore")]
         public int MissionScore { get; set; }
     }
+
+    public class MissionDisplay : MissionsDb
+    {
+        public MissionDisplay(MissionsDb db, string UserID)
+        {
+            this.MissionID = db.MissionID;
+            this.MissionName = db.MissionName;
+            this.MissionScore = db.MissionScore;
+            this.TableName = db.TableName;
+            this.RoomID = db.RoomID;
+            //this.ColorDisplay = Color.FromArgb("AFDE5F");
+
+        }
+        public Color ColorDisplay { get; set; }
+
+    }
 }

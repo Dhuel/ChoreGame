@@ -18,7 +18,7 @@ namespace TheBoops.Database.DbHandlers
             _context = new DynamoDBContext(dynamoDbClient);
         }
 
-        private bool isConnected = false;
+        private bool isConnected = true;
 
         public async Task<object> GetTableData(string tableName, List<SearchQuery> searchQueries = null)
         {
@@ -173,8 +173,8 @@ namespace TheBoops.Database.DbHandlers
             {
                 case Constants.UsersAWSTable:
                     UsersDb _user;
-                    IEnumerable<UsersDb> _users = (IEnumerable<UsersDb>)await GetTableData(Constants.UsersAWSTable, new() { new SearchQuery() { Field = "UserName", Operator = ScanOperator.Equal, FieldValue = Name}});
-                    if (_users.Any())
+                    IEnumerable<UsersDb> _users = (IEnumerable<UsersDb>)await GetTableData(Constants.UsersAWSTable, new() { new SearchQuery("UserName", ScanOperator.Equal, Name) });
+                    if (!_users.Any())
                         _user = CreateUsersDB(Name);
                     else
                         _user = _users.FirstOrDefault();
@@ -182,8 +182,8 @@ namespace TheBoops.Database.DbHandlers
                     break;
                 case Constants.RoomsAWSTable:
                     RoomsDb _room;
-                    IEnumerable<RoomsDb>_rooms = (IEnumerable<RoomsDb>)await GetTableData(Constants.RoomsAWSTable, new() { new SearchQuery() { Field = "RoomName", Operator = ScanOperator.Equal, FieldValue = Name } });
-                    if (_rooms.Any())
+                    IEnumerable<RoomsDb>_rooms = (IEnumerable<RoomsDb>)await GetTableData(Constants.RoomsAWSTable, new() { new SearchQuery("RoomName", ScanOperator.Equal, Name) });
+                    if (!_rooms.Any())
                         _room = CreateRoomDB(Name);
                     else
                         _room = _rooms.FirstOrDefault();
@@ -191,8 +191,8 @@ namespace TheBoops.Database.DbHandlers
                     break;
                 case Constants.MissionsAWSTable:
                     MissionsDb _mission;
-                    IEnumerable<MissionsDb> _missions = (IEnumerable<MissionsDb>)await GetTableData(Constants.MissionsAWSTable, new() { new SearchQuery() { Field = "MissionName", Operator = ScanOperator.Equal, FieldValue = Name }, new SearchQuery() { Field = "RoomID", Operator = ScanOperator.Equal, FieldValue = ID } });
-                    if (_missions.Any())
+                    IEnumerable<MissionsDb> _missions = (IEnumerable<MissionsDb>)await GetTableData(Constants.MissionsAWSTable, new() { new SearchQuery("MissionName", ScanOperator.Equal, Name), new SearchQuery("RoomID", ScanOperator.Equal, ID) });
+                    if (!_missions.Any())
                         _mission = DbHandler.CreateMissionDB(Name, Convert.ToInt32(Value), ID);
                     else
                         _mission = _missions.FirstOrDefault();
@@ -208,6 +208,48 @@ namespace TheBoops.Database.DbHandlers
                         PointsID = GlobalControl.GetHash(12),
                         PointValue = Convert.ToInt32(Value)
                     };
+                    returnvalue = await SaveTableData(Constants.PointsPage, points);
+                    break;
+            }
+
+            return returnvalue;
+        }
+        public async Task<bool> AddRecordToDb(string RecordType, object dbObject)
+        {
+            bool returnvalue = false;
+
+            switch (RecordType)
+            {
+                case Constants.UsersAWSTable:
+                    //UsersDb _user;
+                    //IEnumerable<UsersDb> _users = (IEnumerable<UsersDb>)await GetTableData(Constants.UsersAWSTable, new() { new SearchQuery() { Field = "UserName", Operator = ScanOperator.Equal, FieldValue = Name } });
+                    //if (_users.Any())
+                    //    _user = CreateUsersDB(Name);
+                    //else
+                    //    _user = _users.FirstOrDefault();
+                    //returnvalue = await SaveTableData(Constants.UsersPage, _user);
+                    break;
+                case Constants.RoomsAWSTable:
+                    //RoomsDb _room;
+                    //IEnumerable<RoomsDb> _rooms = (IEnumerable<RoomsDb>)await GetTableData(Constants.RoomsAWSTable, new() { new SearchQuery() { Field = "RoomName", Operator = ScanOperator.Equal, FieldValue = Name } });
+                    //if (_rooms.Any())
+                    //    _room = CreateRoomDB(Name);
+                    //else
+                    //    _room = _rooms.FirstOrDefault();
+                    //returnvalue = await SaveTableData(Constants.RoomsPage, _room);
+                    break;
+                case Constants.MissionsAWSTable:
+                    //MissionsDb _mission;
+                    //IEnumerable<MissionsDb> _missions = (IEnumerable<MissionsDb>)await GetTableData(Constants.MissionsAWSTable, new() { new SearchQuery() { Field = "MissionName", Operator = ScanOperator.Equal, FieldValue = Name }, new SearchQuery() { Field = "RoomID", Operator = ScanOperator.Equal, FieldValue = ID } });
+                    //if (_missions.Any())
+                    //    _mission = DbHandler.CreateMissionDB(Name, Convert.ToInt32(Value), ID);
+                    //else
+                    //    _mission = _missions.FirstOrDefault();
+                    //returnvalue = await SaveTableData(Constants.MissionsPage, _mission);
+                    break;
+                case Constants.PointsAWSTable:
+
+                    PointsDb points = (PointsDb)dbObject;
                     returnvalue = await SaveTableData(Constants.PointsPage, points);
                     break;
             }
@@ -254,6 +296,12 @@ namespace TheBoops.Database.DbHandlers
     {
         public string Field { get; set; }
         public ScanOperator Operator { get; set; }
-        public string FieldValue { get; set; }
+        public  string[] FieldValue { get; set; }
+        public SearchQuery(string field, ScanOperator _operator, params string[] values)
+        {
+            Field  = field;
+            Operator = _operator;
+            FieldValue = values;
+        }
     }
 }

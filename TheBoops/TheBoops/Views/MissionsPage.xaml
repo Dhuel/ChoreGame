@@ -12,8 +12,14 @@
     </ContentPage.ToolbarItems>
     <StackLayout>
         <StackLayout HorizontalOptions="Center" Margin=" 0,30,0,0">
-            <Label Text="What are you doing?" FontSize="Header"></Label>
+            <Label Text="When did you do it?" FontSize="Header"></Label>
+            <DatePicker Date="{Binding CompletionDate}" HorizontalOptions="Center"/>
         </StackLayout>
+        
+        <StackLayout HorizontalOptions="Center" Margin=" 0,30,0,0">
+            <Label Text="What did you do?" FontSize="Header"></Label>
+        </StackLayout>
+        
         <ListView ItemsSource="{Binding Missions}" 
                HasUnevenRows="True" 
                SeparatorVisibility="None"
@@ -22,10 +28,11 @@
                 <DataTemplate>
                     <ViewCell>
                         <VerticalStackLayout  Margin="10,10,10,10" Background="Transparent">
-                            <Frame CornerRadius="10"  HasShadow="False" BackgroundColor="{Binding Color}"> 
+                            <Frame CornerRadius="10"  HasShadow="False" BackgroundColor="{Binding ColorDisplay}"> 
                                 <StackLayout Orientation="Horizontal" Background="Transparent">
-                                    <Label Text="{Binding MissionName, StringFormat='{0:F0}'}" TextColor="#504E4E" FontSize="Large"/>
-                                    <Label Text="{Binding MissionScore, StringFormat=' ({0:F0})'}" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
+                                    <Label Text="{Binding MissionScore, StringFormat='({0:F0})'}" TextColor="#504E4E" FontAttributes="Bold" FontSize="Large"/>
+                                    <Label Text="{Binding MissionName, StringFormat=' {0:F0}'}" TextColor="#504E4E" FontSize="Large"/>
+                                    
                                 </StackLayout>
                             </Frame>
                         </VerticalStackLayout>

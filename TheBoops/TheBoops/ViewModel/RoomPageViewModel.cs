@@ -72,7 +72,7 @@ namespace TheBoops.ViewModel
         public async void LoadPageDataAsync()
         {
             _dbHaHandler = GlobalControl.GetDbHandler();
-            Rooms = (IEnumerable<RoomsDb>)await _dbHaHandler.GetTableData(Constants.RoomsAWSTable);
+            Rooms = ((IEnumerable<RoomsDb>)await _dbHaHandler.GetTableData(Constants.RoomsAWSTable)).OrderBy(c=>c.RoomName);
         }
         private static async void RoomSelected(RoomsDb room)
         {
