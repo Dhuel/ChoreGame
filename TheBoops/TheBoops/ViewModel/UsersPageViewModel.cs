@@ -120,13 +120,13 @@ namespace TheBoops.ViewModel
             {
                 //Calculate current points
                 int total = 0;
-                foreach (PointsDb _point in (List<PointsDb>)await _dbHaHandler.GetTableData(
-                    Constants.PointsAWSTable,new()
+                var query = (List<PointsDb>)await _dbHaHandler.GetTableData(
+                    Constants.PointsAWSTable, new()
                     {
                         new SearchQuery("UserID",ScanOperator.Equal, user.UserID),
-                        new SearchQuery("CompletionDate",ScanOperator.Between, LastSunday(),NextSunday())
-                    })
-                    )
+                        new SearchQuery("CompletionDate",ScanOperator.In, GetDaysInWeek())
+                    });
+                foreach (PointsDb _point in query)
                 {
                     total += _point.PointValue;
                 }
@@ -134,15 +134,14 @@ namespace TheBoops.ViewModel
                 _User.Add(new UsersDisplay(user, total));
                 Users = _User;
 
-                //calculate last weeks points
                 int LastWeeksTotal = 0;
-                foreach (PointsDb _point in (List<PointsDb>)await _dbHaHandler.GetTableData(
+                query = (List<PointsDb>)await _dbHaHandler.GetTableData(
                     Constants.PointsAWSTable, new()
                     {
                         new SearchQuery("UserID",ScanOperator.Equal, user.UserID),
-                        new SearchQuery("CompletionDate",ScanOperator.Between, LastSunday(-1),NextSunday(-1))
-                    })
-                    )
+                        new SearchQuery("CompletionDate",ScanOperator.In, GetDaysInWeek(true))
+                    });
+                foreach (PointsDb _point in query)
                 {
                     LastWeeksTotal += _point.PointValue;
                 }
@@ -156,72 +155,53 @@ namespace TheBoops.ViewModel
         }
 
 
-        private string NextSunday(int week = 0)
+        private string[] GetDaysInWeek(bool previousWeek = false)
         {
+            //return dates from next sunday? meh
             DateTime checkedDate = DateTime.Now;
-            if (week == -1)
+            if (previousWeek)
                 checkedDate = checkedDate.AddDays(-7);
-            string returnDate = "";
+            List<string> returnDate = new List<string>();
+            string start_date = "";
+            string end_date = "";
             switch (checkedDate.DayOfWeek.ToString())
             {
                 case "Sunday":
-                    returnDate = checkedDate.AddDays(7).ToString("MM/dd/yyyy");
+                    end_date = checkedDate.AddDays(6).ToString("MM/dd/yyyy");
+                    start_date = checkedDate.ToString("MM/dd/yyyy");
                     break;
                 case "Monday":
-                    returnDate = (checkedDate.AddDays(6)).ToString("MM/dd/yyyy");
+                    end_date = checkedDate.AddDays(5).ToString("MM/dd/yyyy");
+                    start_date = checkedDate.AddDays(-1).ToString("MM/dd/yyyy");
                     break;
                 case "Tuesday":
-                    returnDate = (checkedDate.AddDays(5)).ToString("MM/dd/yyyy");
+                    end_date = checkedDate.AddDays(4).ToString("MM/dd/yyyy");
+                    start_date = checkedDate.AddDays(-2).ToString("MM/dd/yyyy");
                     break;
                 case "Wednesday":
-                    returnDate = (checkedDate.AddDays(4)).ToString("MM/dd/yyyy");
+                    end_date = checkedDate.AddDays(3).ToString("MM/dd/yyyy");
+                    start_date = checkedDate.AddDays(-3).ToString("MM/dd/yyyy");
                     break;
                 case "Thursday":
-                    returnDate = (checkedDate.AddDays(3)).ToString("MM/dd/yyyy");
+                    end_date = checkedDate.AddDays(2).ToString("MM/dd/yyyy");
+                    start_date = checkedDate.AddDays(-4).ToString("MM/dd/yyyy");
                     break;
                 case "Friday":
-                    returnDate = (checkedDate.AddDays(2)).ToString("MM/dd/yyyy");
+                    end_date = checkedDate.AddDays(1).ToString("MM/dd/yyyy");
+                    start_date = checkedDate.AddDays(-5).ToString("MM/dd/yyyy");
                     break;
                 case "Saturday":
-                    returnDate = (checkedDate.AddDays(1)).ToString("MM/dd/yyyy");
+                    end_date = checkedDate.ToString("MM/dd/yyyy");
+                    start_date = checkedDate.AddDays(-6).ToString("MM/dd/yyyy");
                     break;
             }
-            return returnDate;
-        }
-
-        private string LastSunday( int week = 0)
-        {
-            DateTime checkedDate = DateTime.Now;
-            if (week == -1)
-                checkedDate = checkedDate.AddDays(-7);
-            string returnDate = "";
-            switch(checkedDate.DayOfWeek.ToString())
+            while (start_date != DateTime.Parse(end_date).AddDays(1).ToString("MM/dd/yyyy"))
             {
-                case "Sunday":
-                    returnDate = checkedDate.ToString("MM/dd/yyyy");
-                    break;
-                case "Monday":
-                    returnDate = (checkedDate.AddDays(-1)).ToString("MM/dd/yyyy");
-                    break;
-                case "Tuesday":
-                    returnDate = (checkedDate.AddDays(-2)).ToString("MM/dd/yyyy");
-                    break;
-                case "Wednesday":
-                    returnDate = (checkedDate.AddDays(-3)).ToString("MM/dd/yyyy");
-                    break;
-                case "Thursday":
-                    returnDate = (checkedDate.AddDays(-4)).ToString("MM/dd/yyyy");
-                    break;
-                case "Friday":
-                    returnDate = (checkedDate.AddDays(-5)).ToString("MM/dd/yyyy");
-                    break;
-                case "Saturday":
-                    returnDate = (checkedDate.AddDays(-6)).ToString("MM/dd/yyyy");
-                    break;
+                returnDate.Add(start_date);
+                start_date = DateTime.Parse(start_date).AddDays(1).ToString("MM/dd/yyyy");
             }
-            return returnDate;
+            return returnDate.ToArray();
         }
-
         /// <summary>
         /// Selects the clicked user
         /// </summary>

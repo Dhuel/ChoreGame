@@ -1,71 +1,26 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using TheBoops.Database.DbHandlers;
-using TheBoops.Database.Tables;
-using TheBoops.Global;
-
-namespace TheBoops.ViewModel
+#region PropertyChange
+public event PropertyChangedEventHandler PropertyChanged;
+// This method is called by the Set accessor of each property.  
+// The CallerMemberName attribute that is applied to the optional propertyName  
+// parameter causes the property name of the caller to be substituted as an argument.  
+private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
 {
-    public class MissionsPageViewModel : INotifyPropertyChanged
-    {
-        #region PropertyChange
-        public event PropertyChangedEventHandler PropertyChanged;
-        // This method is called by the Set accessor of each property.  
-        // The CallerMemberName attribute that is applied to the optional propertyName  
-        // parameter causes the property name of the caller to be substituted as an argument.  
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-        #region Global Variables
-        IDbHandler _dbHaHandler;
-        #endregion
-        #region Page Variables
-        public string Title { get; set; }
-        private IEnumerable<MissionsDb> _Missions { get; set; }
-        public IEnumerable<MissionsDb> Missions
-        {
-            get
-            {
-                return _Missions;
-            }
-            set
-            {
-                _Missions = value;
-                NotifyPropertyChanged();
-            }
-        }
-        private MissionsDb _Mission { get; set; }
-        public MissionsDb Mission
-        {
-            get { return _Mission; }
-            set
-            {
-                _Mission = value;
-                MissionSelected(_Mission);
-                NotifyPropertyChanged();
-            }
-        }
-
-        #endregion
-        #region Constructor
-        public MissionsPageViewModel()
-        {
-            Title = "Missions";
-            loadPageData();
-        }
-        #endregion
-        #region Function Calls
-        private async void loadPageData()
-        {
-            _dbHaHandler = GlobalControl.getDbHandler();
-            Missions = (IEnumerable<MissionsDb>)await _dbHaHandler.GetDataFromTable("Missions");
-        }
-        private void MissionSelected(MissionsDb mission)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-    }
+    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
+#endregion
+#region Page Variables
+public string Title { get; set; }
+#endregion
+#region Constructor
+public ctor()
+{
+    Title = "Rooms";
+    loadPageData();
+}
+#endregion
+#region Function Calls
+private void loadPageData()
+{
+    throw new NotImplementedException();
+}
+#endregion

@@ -26,16 +26,16 @@ namespace TheBoops
             //Setup DynamoDB Client
             var region = RegionEndpoint.USWest2;
             var credentials = new BasicAWSCredentials(
-                        accessKey: "{accessKey}",
-                        secretKey: "{secretKey}");
+                        accessKey: "AKIAY6B2GOR54HXQLV7N",
+                        secretKey: "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");
             builder.Services.AddSingleton<IAmazonDynamoDB>(_ => new AmazonDynamoDBClient(credentials, region));
 
             //Regitering the repository
             builder.Services.AddSingleton<IDbHandler, DbHandler>();
 
             //Register ViewModels and Pages
-            builder.Services.AddTransient<MainPage>();
-            builder.Services.AddTransient<MainPageViewModel>();
+            builder.Services.AddTransient<UsersPage>();
+            builder.Services.AddTransient<UsersPageViewModel>();
 
             return builder.Build();
         }
