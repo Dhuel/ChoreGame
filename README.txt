@@ -11,7 +11,6 @@ Set Up:
   c. Missions - TableName{Partition key}, MissionID{Sort key}
   d. Points - TableName{Partition key}, PointsID{Sort key}
   e. Logs - TableName{Partition key}, PointsID{LogID key}
-
 3. Generate an AWS access Key and secret key - https://aws.amazon.com/blogs/security/how-to-find-update-access-keys-password-mfa-aws-management-console/
 4. Install project and plug access key and secret key into MauiProgram.cs file
 5. Load to device.
