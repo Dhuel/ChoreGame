@@ -40,5 +40,23 @@
         <StackLayout Margin=" 30,0,0,0">
             <Label Text = "{Binding Path='Winner.UserNameDisplay',StringFormat='Winner: {0:F0}'}" FontAttributes="Bold" FontSize="Header"></Label>
         </StackLayout>
+
+        <ListView ItemsSource="{Binding Logs}" 
+          HasUnevenRows="True" 
+          SeparatorVisibility="None"
+          SelectedItem="{Binding Log, Mode=TwoWay}" Margin="10,20,0,0" SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <VerticalStackLayout >
+                            <StackLayout Margin="20,5,0,0">
+                                <Label Text="{Binding LogDisplay, StringFormat='{0:F0}'}" TextColor="Gray" FontAttributes="Bold" FontSize="Micro"/>
+                            </StackLayout>
+                        </VerticalStackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
     </VerticalStackLayout>
 </ContentPage>

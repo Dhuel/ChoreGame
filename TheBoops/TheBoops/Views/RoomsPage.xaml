@@ -12,7 +12,7 @@
     </ContentPage.ToolbarItems>
     <StackLayout>
         <StackLayout HorizontalOptions="Center" Margin=" 0,30,0,0">
-            <Label Text="Where are you?" FontSize="Header"></Label>
+            <Label Text=" Where are you? " FontSize="Header"></Label>
         </StackLayout>
         <ListView ItemsSource="{Binding Rooms}" 
                HasUnevenRows="True" 

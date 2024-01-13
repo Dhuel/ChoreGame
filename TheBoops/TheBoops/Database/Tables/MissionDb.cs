@@ -26,8 +26,9 @@ namespace TheBoops.Database.Tables
 
     public class MissionDisplay : MissionsDb
     {
-        public MissionDisplay(MissionsDb db, string UserID)
+        public MissionDisplay(MissionsDb db)
         {
+            //TODO - update this so that if a user has entered this mission already today, it changes color
             this.MissionID = db.MissionID;
             this.MissionName = db.MissionName;
             this.MissionScore = db.MissionScore;

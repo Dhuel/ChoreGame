@@ -11,6 +11,8 @@ namespace TheBoops.Global
         public const string RoomsAWSTable = "#ROOMS#";
         public const string MissionsAWSTable = "#MISSIONS#";
         public const string PointsAWSTable = "#POINTS#";
+        public const string LogsAWSTable = "#LOGS#";
+        public const string LogsPage = "Logs";
         public const string UsersPage = "Users";
         public const string RoomsPage = "Rooms";
         public const string MissionsPage = "Missions";

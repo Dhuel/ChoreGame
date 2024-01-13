@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//using CommunityToolkit.Maui.Alerts;
+//using CommunityToolkit.Maui.Core;
 using TheBoops.Database.DbHandlers;
 
 namespace TheBoops.Global
@@ -29,8 +27,6 @@ namespace TheBoops.Global
         {
             return DbHandler;
         }
-
-
         public static string GetHash(int length)
         {
             Random rand = new();
@@ -46,6 +42,20 @@ namespace TheBoops.Global
 
             return randomString;
         }
+
+        //public static async void ShowToast(string message)
+        //{
+
+        //    CancellationTokenSource cancellationTokenSource = new();
+
+        //    string text = message;
+        //    ToastDuration duration = ToastDuration.Short;
+        //    double fontSize = 14;
+
+        //    var toast = Toast.Make(text, duration, fontSize);
+
+        //    await toast.Show(cancellationTokenSource.Token);
+        //}
 
     }
 }

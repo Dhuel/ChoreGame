@@ -96,7 +96,7 @@ namespace TheBoops.ViewModel
             foreach (MissionsDb mission in Missions_)
             {
                 List<MissionDisplay> _Missions = Missions.ToList();
-                _Missions.Add(new MissionDisplay(mission, "Orange"));
+                _Missions.Add(new MissionDisplay(mission));
                 Missions = _Missions;
             }
         }
@@ -113,6 +113,18 @@ namespace TheBoops.ViewModel
                 CompletionDate = CompletionDate.ToString("MM/dd/yyyy")
             };
             returnvalue = await _dbHaHandler.AddRecordToDb(Constants.PointsAWSTable, points);
+
+
+            LogDb log = new()
+            {
+                LogID = GlobalControl.GetHash(12),
+                MissionScore = mission.MissionScore,
+                TableName = Constants.LogsAWSTable,
+                UserName = GlobalControl.GetHash(),
+                CompletionTime = CompletionDate.ToString("MM/dd/yyyy"),
+                TaskCompleted = mission.MissionID
+            };
+            await _dbHaHandler.SaveTableData("Logs", log);
             await NavigationHandler.DisplayAlert("Mission complete!");
             await NavigationHandler.PopToRoot();
             return returnvalue;

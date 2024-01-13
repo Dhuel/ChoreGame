@@ -18,7 +18,7 @@ namespace TheBoops.Database.DbHandlers
             _context = new DynamoDBContext(dynamoDbClient);
         }
 
-        private bool isConnected = true;
+        private readonly bool isConnected = true;
 
         public async Task<object> GetTableData(string tableName, List<SearchQuery> searchQueries = null)
         {
@@ -84,6 +84,23 @@ namespace TheBoops.Database.DbHandlers
                             returnData = await _context.ScanAsync<PointsDb>(conditions).GetRemainingAsync();
                         }
                         break;
+                    case Constants.LogsAWSTable:
+                        if (searchQueries == null)
+                        {
+                            var returnData_ = await _context.QueryAsync<LogDb>($"{tableName}").GetRemainingAsync();
+                            returnData_ = returnData_.OrderByDescending(c => c.CompletionTime).ToList();
+                            returnData = returnData_;
+                        }  
+                        else
+                        {
+                            List<ScanCondition> conditions = new();
+                            foreach (SearchQuery query in searchQueries)
+                            {
+                                conditions.Add(new ScanCondition(query.Field, query.Operator, query.FieldValue));
+                            }
+                            returnData = await _context.ScanAsync<LogDb>(conditions).GetRemainingAsync();
+                        }
+                        break;
                     default:
                         break;
                 };
@@ -96,21 +113,21 @@ namespace TheBoops.Database.DbHandlers
                 switch (tableName)
                 {
                     case Constants.UsersAWSTable:
-                        return new List<UsersDb>() { new UsersDb() { TableName = "Not connected", UserName = "Someone - Not connected", UserID = "Not connected" } };
+                        return new List<UsersDb>() { new() { TableName = "Not connected", UserName = "Someone - Not connected", UserID = "Not connected" } };
                     case Constants.RoomsAWSTable:
-                        return new List<RoomsDb>() { new RoomsDb() { TableName = "Not connected", RoomID = "Not connected", RoomName = "Somewhere - Not connected" } };
+                        return new List<RoomsDb>() { new() { TableName = "Not connected", RoomID = "Not connected", RoomName = "Somewhere - Not connected" } };
                     case Constants.MissionsAWSTable:
-                        return new List<MissionsDb>() { new MissionsDb() { TableName = "Not connected", RoomID = "Not connected", MissionName = "Something - Not connected", MissionScore=0 } };
+                        return new List<MissionsDb>() { new() { TableName = "Not connected", RoomID = "Not connected", MissionName = "Something - Not connected", MissionScore = 0 } };
                     case Constants.PointsAWSTable:
-                        return new List<PointsDb>() { new PointsDb() { TableName = "Not connected", MissionID = "Not connected", PointsID = "Not connected", PointValue = 0, UserID = "Not connected", CompletionDate = DateTime.Now.ToString("MM/dd/yyyy") } };
-
+                        return new List<PointsDb>() { new() { TableName = "Not connected", MissionID = "Not connected", PointsID = "Not connected", PointValue = 0, UserID = "Not connected", CompletionDate = DateTime.Now.ToString("MM/dd/yyyy") } };
+                    default:
+                        break;
                 }
                 return null;
             }
         }
         public async Task<bool>SaveTableData(string tableName, object DbObject = null)
         {
-            //TODO - update this to take AWS values
             bool returnData = false;
             try
             {
@@ -140,6 +157,11 @@ namespace TheBoops.Database.DbHandlers
                     case Constants.PointsPage:
                         PointsDb points = (PointsDb)DbObject;
                         await _context.SaveAsync(points);
+                        returnData = true;
+                        break;
+                    case Constants.LogsPage:
+                        LogDb Log = (LogDb)DbObject;
+                        await _context.SaveAsync(Log);
                         returnData = true;
                         break;
                     default:

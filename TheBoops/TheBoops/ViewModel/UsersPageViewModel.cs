@@ -96,6 +96,20 @@ namespace TheBoops.ViewModel
                 NotifyPropertyChanged();
             }
         }
+
+        private IEnumerable<LogsDisplay> Logs_ { get; set; }
+        public IEnumerable<LogsDisplay> Logs
+        {
+            get
+            {
+                return Logs_;
+            }
+            set
+            {
+                Logs_ = value;
+                NotifyPropertyChanged();
+            }
+        }
         #endregion
         #region Constructors
         public UsersPageViewModel(IDbHandler DbHandler)
@@ -113,6 +127,7 @@ namespace TheBoops.ViewModel
         {
             _dbHaHandler = GlobalControl.GetDbHandler();
             Users = new List<UsersDisplay>();
+            Logs = new List<LogsDisplay>();
 
 
             IEnumerable<UsersDb> _Users = (IEnumerable<UsersDb>)await _dbHaHandler.GetTableData(Constants.UsersAWSTable);
@@ -124,7 +139,7 @@ namespace TheBoops.ViewModel
                     Constants.PointsAWSTable, new()
                     {
                         new SearchQuery("UserID",ScanOperator.Equal, user.UserID),
-                        new SearchQuery("CompletionDate",ScanOperator.In, GetDaysInWeek())
+                        new SearchQuery("CompletionDate",ScanOperator.In, UsersPageViewModel.GetDaysInWeek())
                     });
                 foreach (PointsDb _point in query)
                 {
@@ -139,29 +154,38 @@ namespace TheBoops.ViewModel
                     Constants.PointsAWSTable, new()
                     {
                         new SearchQuery("UserID",ScanOperator.Equal, user.UserID),
-                        new SearchQuery("CompletionDate",ScanOperator.In, GetDaysInWeek(true))
+                        new SearchQuery("CompletionDate",ScanOperator.In, UsersPageViewModel.GetDaysInWeek(true))
                     });
                 foreach (PointsDb _point in query)
                 {
                     LastWeeksTotal += _point.PointValue;
                 }
-                if (LastWeekUsers == null)
-                    LastWeekUsers = new List<UsersDisplay>();
+                LastWeekUsers ??= new List<UsersDisplay>();
                 List<UsersDisplay> _LastWeekUser = LastWeekUsers.ToList();
                 _LastWeekUser.Add(new UsersDisplay(user, LastWeeksTotal));
                 LastWeekUsers = _LastWeekUser;
             }
             Winner = LastWeekUsers.OrderByDescending(x => x.Points).First();
+
+            IEnumerable<LogDb> _Logs = (IEnumerable<LogDb>)await _dbHaHandler.GetTableData(Constants.LogsAWSTable);
+
+            foreach(LogDb _log in _Logs.Take(10))
+            {
+                List<LogsDisplay> Logs_ = Logs.ToList();
+                var log = new LogsDisplay(_log, await LogsDisplay.GetUserName(_log.UserName), await LogsDisplay.GetTaskName(_log.TaskCompleted));
+                Logs_.Add(log);
+                Logs = Logs_;
+            }
         }
 
 
-        private string[] GetDaysInWeek(bool previousWeek = false)
+        private static string[] GetDaysInWeek(bool previousWeek = false)
         {
             //return dates from next sunday? meh
             DateTime checkedDate = DateTime.Now;
             if (previousWeek)
                 checkedDate = checkedDate.AddDays(-7);
-            List<string> returnDate = new List<string>();
+            List<string> returnDate = new();
             string start_date = "";
             string end_date = "";
             switch (checkedDate.DayOfWeek.ToString())

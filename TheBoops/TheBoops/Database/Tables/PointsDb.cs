@@ -25,9 +25,5 @@ namespace TheBoops.Database.Tables
         public string UserID { get; set; }
         [DynamoDBProperty("PointValue")]
         public int PointValue { get; set; }
-
-
-
-
     }
 }

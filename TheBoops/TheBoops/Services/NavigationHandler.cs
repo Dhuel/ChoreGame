@@ -28,15 +28,14 @@ namespace TheBoops.Services
         {
             await Application.Current.MainPage.Navigation.PopAsync(); 
         }
+        internal async static Task DisplayAlert(string v)
+        {
+            await Application.Current.MainPage.DisplayAlert("Yay!", v, "OK");
+        }
 
         internal async static Task PopToRoot()
         {
             await Application.Current.MainPage.Navigation.PopToRootAsync();
-        }
-
-        internal async static Task DisplayAlert(string v)
-        {
-            await Application.Current.MainPage.DisplayAlert("Alert",v,"OK");
         }
     }
 }
