@@ -26,8 +26,8 @@ namespace TheBoops
             //Setup DynamoDB Client
             var region = RegionEndpoint.USWest2;
             var credentials = new BasicAWSCredentials(
-                        accessKey: "AKIAY6B2GOR54HXQLV7N",
-                        secretKey: "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");
+                        accessKey: "{Access Key}",
+                        secretKey: "{Secret Key}");
             builder.Services.AddSingleton<IAmazonDynamoDB>(_ => new AmazonDynamoDBClient(credentials, region));
 
             //Regitering the repository
